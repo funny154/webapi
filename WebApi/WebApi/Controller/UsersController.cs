@@ -23,99 +23,116 @@ namespace WebApi.Controller
         }
 
         // GET: api/Users
+        /// <summary>
+        /// 取得User資訊
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     Get / Todo
+        ///     {
+        ///        "id": 1,
+        ///        "name": "Item #1",
+        ///        "phone": 091234567
+        ///     }
+        /// </remarks>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserResponse>>> GetUsers()
         {
-            return await _UserServices.GetAllUser();
+            return StatusCode(StatusCodes.Status200OK, await _UserServices.GetAllUser());
         }
 
-        //// GET: api/Users/5
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<User>> GetUser(int id)
-        //{
-        //  if (_context.Users == null)
-        //  {
-        //      return NotFound();
-        //  }
-        //    var user = await _context.Users.FindAsync(id);
+        // GET: api/Users/5
+        /// <summary>
+        /// 取得User資訊
+        /// </summary>
+        /// <param name="id">User id</param>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     Get / Todo
+        ///     {
+        ///        "id": 1,
+        ///        "name": "Item #1",
+        ///        "phone": 091234567
+        ///     }
+        /// </remarks>
+        [HttpGet("{id}")]
+        public async Task<ActionResult<UserResponse>> GetUser(int id)
+        {
+            return await _UserServices.GetUser(id);
+        }
 
-        //    if (user == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // PUT: api/Users/5
+        /// <summary>
+        /// 修改 User 資訊
+        /// </summary>
+        /// <param name="id">User id</param>
+        /// <param name="name">User name</param>
+        /// <param name="phone">User phone</param>
+        /// <remarks>
+        /// </remarks>
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutUser(int id, string name, int phone)
+        {
+            try
+            {
+                await _UserServices.UpadteUser(new User { Id = id , Name = name, Phone = phone});
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_UserServices.UserExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return NoContent();
+        }
 
-        //    return user;
-        //}
+        // POST: api/Users
+        /// <summary>
+        /// 新增 User 資訊
+        /// </summary>
+        /// <param name="name">User name</param>
+        /// <param name="phone">User phone</param>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     Get / Todo
+        ///     {
+        ///        "id": 1,
+        ///        "name": "Item #1",
+        ///        "phone": 091234567
+        ///     }
+        /// </remarks>
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<UserResponse>> PostUser(string name, int phone)
+        {
+            var responseuser = await _UserServices.AddUser(new User{ Name = name , Phone = phone });
+            return CreatedAtAction("GetUser", new { id = responseuser.Id }, responseuser);
+        }
 
-        //// PUT: api/Users/5
-        //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> PutUser(int id, User user)
-        //{
-        //    if (id != user.Id)
-        //    {
-        //        return BadRequest();
-        //    }
+        // DELETE: api/Users/5
+        /// <summary>
+        /// 刪除 User 資訊
+        /// </summary>
+        /// <param name="id">User id</param>
+        /// <remarks>
+        /// </remarks>
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            var responseuser = await _UserServices.DeleteUser(id);
+            if(!responseuser) return NotFound();
+            else return NoContent();
+        }
 
-        //    _context.Entry(user).State = EntityState.Modified;
 
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!UserExists(id))
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
-
-        //    return NoContent();
-        //}
-
-        //// POST: api/Users
-        //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPost]
-        //public async Task<ActionResult<User>> PostUser(User user)
-        //{
-        //  if (_context.Users == null)
-        //  {
-        //      return Problem("Entity set 'IncrudContext.Users'  is null.");
-        //  }
-        //    _context.Users.Add(user);
-        //    await _context.SaveChangesAsync();
-
-        //    return CreatedAtAction("GetUser", new { id = user.Id }, user);
-        //}
-
-        //// DELETE: api/Users/5
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteUser(int id)
-        //{
-        //    if (_context.Users == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    var user = await _context.Users.FindAsync(id);
-        //    if (user == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    _context.Users.Remove(user);
-        //    await _context.SaveChangesAsync();
-
-        //    return NoContent();
-        //}
-
-        //private bool UserExists(int id)
-        //{
-        //    return (_context.Users?.Any(e => e.Id == id)).GetValueOrDefault();
-        //}
     }
 }

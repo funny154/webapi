@@ -29,5 +29,63 @@ namespace WebApi.Services
             return result;
 
         }
+
+        public async Task<UserResponse> GetUser(int id)
+        {
+
+            UserResponse result = new UserResponse();
+            var user = await _context.Users.FindAsync(id);
+
+            if (user != null)
+            {
+                result.Id = user.Id;
+                result.Name = user.Name;
+                result.Phone = user.Phone;
+            }
+            return result;
+
+        }
+
+        public async Task<UserResponse> AddUser(User user)
+        {
+
+            UserResponse result = new UserResponse();
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            if (user != null)
+            {
+                result.Id = user.Id;
+                result.Name = user.Name;
+                result.Phone = user.Phone;
+            }
+            return result;
+
+        }
+
+        public async Task UpadteUser(User user)
+        {
+            _context.Entry(user).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> DeleteUser(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return false;
+            }
+
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        public bool UserExists(int id)
+        {
+            return (_context.Users?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
     }
 }
