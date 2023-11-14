@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using WebApi.Models;
 using WebApi.Repoitory;
 using WebApi.Services;
+using WebApi.Services.User;
 
 namespace WebApi.Controller
 {
@@ -15,9 +16,9 @@ namespace WebApi.Controller
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly UserServices _UserServices;
+        private readonly IUserServices _UserServices;
 
-        public UsersController(UserServices UserServices)
+        public UsersController(IUserServices UserServices)
         {
             _UserServices = UserServices;
         }

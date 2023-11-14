@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using WebApi.Models;
 using WebApi.Repoitory;
 
-namespace WebApi.Services
+namespace WebApi.Services.User
 {
-    public class UserServices
+    public class UserServices : IUserServices
     {
         private readonly IncrudContext _context;
 
@@ -13,19 +13,20 @@ namespace WebApi.Services
         {
             _context = context;
         }
-        public async Task<List<UserResponse>> GetAllUser() {
+        public async Task<List<UserResponse>> GetAllUser()
+        {
 
             List<UserResponse> result = new List<UserResponse>();
             var user = await _context.Users.ToListAsync();
-            foreach(var item in user)
-            if (user != null)
-            {
-                UserResponse userResponse = new UserResponse();
-                userResponse.Id = item.Id;
-                userResponse.Name  = item.Name;
-                userResponse.Phone = item.Phone;
-                result.Add(userResponse);
-            }
+            foreach (var item in user)
+                if (user != null)
+                {
+                    UserResponse userResponse = new UserResponse();
+                    userResponse.Id = item.Id;
+                    userResponse.Name = item.Name;
+                    userResponse.Phone = item.Phone;
+                    result.Add(userResponse);
+                }
             return result;
 
         }
@@ -46,7 +47,7 @@ namespace WebApi.Services
 
         }
 
-        public async Task<UserResponse> AddUser(User user)
+        public async Task<UserResponse> AddUser(Models.User user)
         {
 
             UserResponse result = new UserResponse();
@@ -63,7 +64,7 @@ namespace WebApi.Services
 
         }
 
-        public async Task UpadteUser(User user)
+        public async Task UpadteUser(Models.User user)
         {
             _context.Entry(user).State = EntityState.Modified;
             await _context.SaveChangesAsync();
