@@ -2,6 +2,7 @@
 using System.Reflection;
 using WebApi.Repoitory;
 using WebApi.Services;
+using WebApi.Services.User;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
-builder.Services.AddScoped<UserServices>();
+builder.Services.AddScoped<IUserServices, UserServices>();
 
 builder.Services.AddDbContext<IncrudContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
